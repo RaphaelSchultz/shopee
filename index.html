@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Análise de Comissões Shopee</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div>
+        <h1>Análise de Comissões Shopee</h1>
+        <p class="subtitle">
+          Dashboard completo para análise de comissões de afiliados. Faça upload do CSV da Shopee e analise por período, canal e Sub IDs.
+        </p>
+      </div>
+      <div class="header-right">
+        <strong id="newFileLabel" class="new-file-link" style="display:none;">
+          Subir nova planilha
+        </strong>
+        <span class="chip chip-pill">
+          <span class="chip-dot"></span>
+          Processamento 100% no navegador
+        </span>
+      </div>
+    </header>
+
+    <section class="upload-panel" id="uploadPanel">
+      <div class="upload-info">
+        <div class="upload-icon">📊</div>
+        <div>
+          <h2>Importar relatório de vendas</h2>
+          <p class="muted">
+            Utilize o arquivo <strong>.csv</strong> exportado do painel de afiliados da Shopee.
+          </p>
+          <p class="hint">
+            Campos utilizados: <strong>Horário do pedido</strong>, <strong>Valor de Compra(R$)</strong>,
+            <strong>Comissão líquida do afiliado(R$)</strong>, <strong>Taxa de contrato do afiliado</strong>,
+            <strong>Sub_id1</strong>, <strong>Sub_id2</strong>, <strong>Sub_id3</strong>, <strong>Canal</strong>.
+          </p>
+        </div>
+      </div>
+      <div class="upload-actions">
+        <label class="btn primary" for="fileInput">
+          <span>Selecionar CSV</span>
+        </label>
+        <input id="fileInput" type="file" accept=".csv" />
+        <div id="fileName" class="file-name">Nenhum arquivo selecionado</div>
+      </div>
+    </section>
+
+    <p id="errorArea" class="error" style="display:none;"></p>
+
+    <main id="mainContent" class="main" style="display:none;">
+      <section class="filters-and-summary">
+        <div class="filters-card card">
+          <div class="card-header">
+            <h2>Filtros</h2>
+            <span class="badge">Refine por período e origem das vendas</span>
+          </div>
+          <div class="filters-grid">
+            <div class="field">
+              <label for="dateFrom">Data inicial (Horário do pedido)</label>
+              <input type="date" id="dateFrom" />
+            </div>
+            <div class="field">
+              <label for="dateTo">Data final (Horário do pedido)</label>
+              <input type="date" id="dateTo" />
+            </div>
+            <div class="field">
+              <label for="channelFilter">Canal</label>
+              <select id="channelFilter">
+                <option value="__all">Todos os canais</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="subFilter">Sub ID (Sub_id1)</label>
+              <select id="subFilter">
+                <option value="__all">Todos os Sub IDs</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <article class="summary-card card">
+            <div class="summary-icon">🧾</div>
+            <div class="summary-content">
+              <p class="label">Total de pedidos</p>
+              <p id="summaryTotalOrders" class="value">-</p>
+              <p id="summaryOrdersDetail" class="detail">-</p>
+            </div>
+          </article>
+
+          <article class="summary-card card">
+            <div class="summary-icon">💰</div>
+            <div class="summary-content">
+              <p class="label">Vendas totais</p>
+              <p id="summaryTotalSales" class="value">-</p>
+              <p id="summaryAvgTicket" class="detail">-</p>
+            </div>
+          </article>
+
+          <article class="summary-card card">
+            <div class="summary-icon">🎯</div>
+            <div class="summary-content">
+              <p class="label">Comissão total</p>
+              <p id="summaryTotalCommission" class="value">-</p>
+              <p id="summaryAvgCommission" class="detail">-</p>
+            </div>
+          </article>
+
+          <article class="summary-card card">
+            <div class="summary-icon">📈</div>
+            <div class="summary-content">
+              <p class="label">Taxa média</p>
+              <p id="summaryAvgRate" class="value">-</p>
+              <p id="summaryPeriodLabel" class="detail">Período: -</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="analytics-grid">
+        <div class="column">
+          <section class="card">
+            <div class="card-header">
+              <h2>Comissões por Sub ID 1</h2>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Sub ID 1</th>
+                    <th>Pedidos</th>
+                    <th>Comissão total</th>
+                    <th>Taxa média</th>
+                  </tr>
+                </thead>
+                <tbody id="tableSub1">
+                  <tr><td colspan="4" class="empty">Nenhum dado carregado.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h2>Comissões por Sub ID 2</h2>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Sub ID 2</th>
+                    <th>Pedidos</th>
+                    <th>Comissão total</th>
+                    <th>Taxa média</th>
+                  </tr>
+                </thead>
+                <tbody id="tableSub2">
+                  <tr><td colspan="4" class="empty">Nenhum dado carregado.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h2>Comissões por Sub ID 3</h2>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Sub ID 3</th>
+                    <th>Pedidos</th>
+                    <th>Comissão total</th>
+                    <th>Taxa média</th>
+                  </tr>
+                </thead>
+                <tbody id="tableSub3">
+                  <tr><td colspan="4" class="empty">Nenhum dado carregado.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <div class="column">
+          <section class="card">
+            <div class="card-header">
+              <h2>Vendas por canal</h2>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Canal</th>
+                    <th>Pedidos</th>
+                    <th>Vendas</th>
+                    <th>Comissão</th>
+                    <th>Taxa média</th>
+                  </tr>
+                </thead>
+                <tbody id="tableChannel">
+                  <tr><td colspan="5" class="empty">Nenhum dado carregado.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
